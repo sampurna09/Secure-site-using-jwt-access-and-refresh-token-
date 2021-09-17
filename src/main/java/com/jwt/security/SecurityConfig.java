@@ -12,9 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.jwt.filter.CustomAuthenticationFilter;
 import com.jwt.filter.CustomAuthorizationFilter;
+
 
 
 
@@ -39,19 +41,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 	}
+	
+	
+	private  final String[] PUBLIC_MATCHERS= {
+            "/api/login/**",
+            "/api/token/refresh/**"
+    };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
 		customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("/api/login/**","/api/token/refresh/**").permitAll();
-		http.authorizeRequests().antMatchers("/api/users/**").hasAnyAuthority("ROLE_USER");
-		http.authorizeRequests().antMatchers("/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
-		http.authorizeRequests().anyRequest().permitAll();
+		http
+		.authorizeRequests()
+        .antMatchers(PUBLIC_MATCHERS)
+        .permitAll()
+        .antMatchers("/user/**").hasAuthority("ROLE_USER")
+        .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
+        .anyRequest()
+        .authenticated();
 		http.addFilter(customAuthenticationFilter);
 		http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.csrf().disable().cors().disable();
+          
+		
 		
 	}
 	

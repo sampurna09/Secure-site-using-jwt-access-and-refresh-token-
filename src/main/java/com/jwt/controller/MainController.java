@@ -40,35 +40,11 @@ import com.jwt.service.UserService;
 
 
 @RestController
-@RequestMapping("/api")
 public class MainController {
 	
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/users")
-	public ResponseEntity<List<User>>getUsers(){
-		return ResponseEntity.ok().body(userService.getUsers());
-	}
-	
-	@PostMapping("/user/save")
-	public ResponseEntity<User>saveUser(@RequestBody User user){
-		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toString());
-		return ResponseEntity.created(uri).body(userService.saveUser(user));
-	}
-	
-	@PostMapping("/role/save")
-	public ResponseEntity<Role>saveRole(@RequestBody Role role){
-		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toString());
-		return ResponseEntity.created(uri).body(userService.saveRole(role));
-	}
-	
-	
-	@PostMapping("/role/addtoUser")
-	public ResponseEntity<?>addRoleToUser(@RequestBody RoleToUserForm form){
-		userService.addRoleToUser(form.getUsername(),form.getRoleName());
-		return ResponseEntity.ok().build();
-	}
 	
 	@GetMapping("/token/refresh")
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException {

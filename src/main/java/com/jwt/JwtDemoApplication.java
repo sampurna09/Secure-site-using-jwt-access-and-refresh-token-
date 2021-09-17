@@ -36,9 +36,8 @@ public class JwtDemoApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		
 		userService.saveRole(new Role(null,"ROLE_USER"));
-		userService.saveRole(new Role(null,"ROLE_MANAGER"));
 		userService.saveRole(new Role(null,"ROLE_ADMIN"));
-		userService.saveRole(new Role(null,"ROLE_SUPERADMIN"));
+
 		
 		userService.saveUser(new User(null, "john j", "john1", "1234", new ArrayList<>()));
 		userService.saveUser(new User(null, "john k", "john2", "1234", new ArrayList<>()));
@@ -47,11 +46,8 @@ public class JwtDemoApplication implements CommandLineRunner {
 		
 		
 		userService.addRoleToUser("john1", "ROLE_USER");
-		userService.addRoleToUser("john1", "ROLE_MANAGER");
 		userService.addRoleToUser("john2", "ROLE_ADMIN");
-		userService.addRoleToUser("john2", "ROLE_SUPER_ADMIN");
 		userService.addRoleToUser("john3", "ROLE_USER");
-		userService.addRoleToUser("john4", "ROLE_ADMIN");
 		userService.addRoleToUser("john4", "ROLE_USER");
 		
 		
